@@ -2,88 +2,115 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ฟอร์มสมัครสมาชิก</title>
+    <title>Workshop HTML Form Validation</title>
+
     <style>
         body {
             font-family: sans-serif;
         }
         label {
-            color: #2b5ac8; /* น้ำเงิน */
             font-weight: bold;
+            display: block;
+            margin-top: 10px;
         }
-        h1 {
-            color: #d12f2f; /* แดง */
+        .is-valid {
+            border: 2px solid green;
+        }
+        .is-invalid {
+            border: 2px solid red;
         }
         button {
+            margin-top: 15px;
+            padding: 6px 15px;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h1>สมัครสมาชิก</h1>
 
-    <form action="{{ route('register.submit') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+<h1>สมัครสมาชิก</h1>
 
-        <!-- ชื่อ -->
-        <label style="color:#8A2BE2">ชื่อ:</label>
-        <input type="text" name="firstname" required>
-        <br><br>
+<form id="registerForm">
 
-        <!-- สกุล -->
-        <label style="color:#4B0082">สกุล:</label>
-        <input type="text" name="lastname" required>
-        <br><br>
+    <label>ชื่อ</label>
+    <input type="text" id="firstname">
 
-        <!-- วันเดือนปีเกิด -->
-        <label style="color:#0000FF">วันเดือนปีเกิด:</label>
-        <input type="date" name="birthday" required>
-        <br><br>
+    <label>สกุล</label>
+    <input type="text" id="lastname">
 
-        <!-- เพศ -->
-        <label style="color:#008000">เพศ:</label>
-        <select name="gender" required>
-            <option value="">--เลือก--</option>
-            <option value="male">ชาย</option>
-            <option value="female">หญิง</option>
-            <option value="other">อื่น ๆ</option>
-        </select>
-        <br><br>
+    <label>วันเดือนปีเกิด</label>
+    <input type="date" id="birthday">
 
-        <!-- รูป -->
-        <label style="color:#FFFF00">รูปโปรไฟล์:</label>
-        <input type="file" name="profile_image" accept="image/*">
-        <br><br>
+    <label>อายุ</label>
+    <input type="number" id="age">
 
-        <!-- ที่อยู่ -->
-        <label style="color:#FFA500">ที่อยู่:</label>
-        <textarea name="address" rows="3" required></textarea>
-        <br><br>
+    <label>เพศ</label>
+    <select id="gender">
+        <option value="">--เลือก--</option>
+        <option value="male">ชาย</option>
+        <option value="female">หญิง</option>
+    </select>
 
-        <!-- สีที่ชอบ -->
-        <label style="color:#FF0000">สีที่ชอบ:</label>
-        <input type="color" name="favorite_color">
-        <br><br>
+    <label>รูปโปรไฟล์</label>
+    <input type="file" id="profile">
 
-        <!-- แนวเพลงที่ชอบ -->
-        <label style="color:#8A2BE2">แนวเพลงที่ชอบ:</label>
-        <select name="music_genre[]" multiple>
-            <option value="pop">Pop</option>
-            <option value="rock">Rock</option>
-            <option value="hiphop">Hip-Hop</option>
-            <option value="jazz">Jazz</option>
-        </select>
-        <br><br>
+    <label>ที่อยู่</label>
+    <textarea id="address"></textarea>
 
-        <!-- checkbox ยินยอม -->
-        <label style="color:#4B0082"><input type="checkbox" name="agree" value="1" required>
-            ยินยอมเงื่อนไข
-        </label>
-        <br><br>
+    <label>สีที่ชอบ</label>
+    <input type="color" id="favorite_color">
 
-        <!-- ปุ่ม reset และ บันทึก -->
-        <button type="reset">รีเซ็ต</button>
-        <button type="submit">บันทึก</button>
-    </form>
+    <label>แนวเพลงที่ชอบ</label>
+    <select id="music" multiple>
+        <option value="pop">Pop</option>
+        <option value="rock">Rock</option>
+        <option value="jazz">Jazz</option>
+    </select>
+
+    <label>
+        <input type="checkbox" id="agree"> ยินยอมเงื่อนไข
+    </label>
+
+    <button type="submit">บันทึก</button>
+
+</form>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let isPass = true;
+
+        function check(el) {
+            if (
+                (el.type === "checkbox" && !el.checked) ||
+                (el.type !== "checkbox" && el.value === "")
+            ) {
+                el.classList.add("is-invalid");
+                el.classList.remove("is-valid");
+                isPass = false;
+            } else {
+                el.classList.add("is-valid");
+                el.classList.remove("is-invalid");
+            }
+        }
+
+        check(firstname);
+        check(lastname);
+        check(birthday);
+        check(age);
+        check(gender);
+        check(profile);
+        check(address);
+        check(favorite_color);
+        check(music);
+        check(agree);
+
+        if (isPass) {
+            alert("กรอกข้อมูลครบถ้วน (Pass)");
+        }
+    });
+</script>
+
 </body>
 </html>
