@@ -1,116 +1,139 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <title>Workshop HTML Form Validation</title>
+@extends('template.default')
 
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-        .is-valid {
-            border: 2px solid green;
-        }
-        .is-invalid {
-            border: 2px solid red;
-        }
-        button {
-            margin-top: 15px;
-            padding: 6px 15px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+@section('title', 'Workshop FORM')
+@section('header', 'Workshop #HTML - FORM')
 
-<h1>สมัครสมาชิก</h1>
+@section('content')
+<form method="POST" action="{{ route('html101.store') }}" enctype="multipart/form-data">
+@csrf
 
-<form id="registerForm">
-
+<!-- ชื่อ -->
+<div class="form-section">
     <label>ชื่อ</label>
-    <input type="text" id="firstname">
+    <input id="fname" name="fname" class="form-control">
+    <div class="invalid-feedback">โปรดระบุชื่อ</div>
+</div>
 
+<!-- สกุล -->
+<div class="form-section">
     <label>สกุล</label>
-    <input type="text" id="lastname">
+    <input id="lname" name="lname" class="form-control">
+    <div class="invalid-feedback">โปรดระบุนามสกุล</div>
+</div>
 
-    <label>วันเดือนปีเกิด</label>
-    <input type="date" id="birthday">
+<!-- วันเดือนปีเกิด -->
+<div class="form-section">
+    <label>วัน/เดือน/ปีเกิด</label>
+    <input type="date" id="date" name="date" class="form-control">
+    <div class="invalid-feedback">โปรดระบุวันเกิด</div>
+</div>
 
+<!-- อายุ -->
+<div class="form-section">
     <label>อายุ</label>
-    <input type="number" id="age">
+    <input type="number" id="age" name="age" class="form-control">
+    <div class="invalid-feedback">โปรดระบุอายุ</div>
+</div>
 
-    <label>เพศ</label>
-    <select id="gender">
-        <option value="">--เลือก--</option>
-        <option value="male">ชาย</option>
-        <option value="female">หญิง</option>
-    </select>
+<!-- เพศ -->
+<div class="form-section">
+    <label>เพศ</label><br>
+    <input type="radio" id="male" name="gender" value="ชาย"> ชาย
+    <input type="radio" id="female" name="gender" value="หญิง"> หญิง
+    <div class="invalid-feedback d-none" id="gender-error">โปรดระบุเพศ</div>
+</div>
 
-    <label>รูปโปรไฟล์</label>
-    <input type="file" id="profile">
+<!-- รูป -->
+<div class="form-section">
+    <label>รูป</label>
+    <input type="file" id="photo" name="photo" class="form-control">
+    <div class="invalid-feedback">โปรดเลือกรูป</div>
+</div>
 
+<!-- ที่อยู่ -->
+<div class="form-section">
     <label>ที่อยู่</label>
-    <textarea id="address"></textarea>
+    <textarea id="address" name="address" class="form-control"></textarea>
+    <div class="invalid-feedback">โปรดระบุที่อยู่</div>
+</div>
 
+<!-- สีที่ชอบ -->
+<div class="form-section">
     <label>สีที่ชอบ</label>
-    <input type="color" id="favorite_color">
-
-    <label>แนวเพลงที่ชอบ</label>
-    <select id="music" multiple>
-        <option value="pop">Pop</option>
-        <option value="rock">Rock</option>
-        <option value="jazz">Jazz</option>
+    <select id="color" name="color" class="form-control">
+        <option value="">เลือกสี</option>
+        <option>สีแดง</option>
+        <option>สีเขียว</option>
+        <option>สีน้ำเงิน</option>
+        <option>สีเหลือง</option>
     </select>
+    <div class="invalid-feedback">โปรดเลือกสี</div>
+</div>
 
-    <label>
-        <input type="checkbox" id="agree"> ยินยอมเงื่อนไข
-    </label>
+<!-- แนวเพลงที่ชอบ -->
+<div class="form-section">
+    <label>แนวเพลงที่ชอบ</label><br>
+    <input type="radio" name="music" value="เพื่อชีวิต"> เพื่อชีวิต
+    <input type="radio" name="music" value="ลูกทุ่ง"> ลูกทุ่ง
+    <input type="radio" name="music" value="อื่นๆ"> อื่นๆ
+    <div class="invalid-feedback d-none" id="music-error">โปรดเลือกแนวเพลง</div>
+</div>
 
-    <button type="submit">บันทึก</button>
+<!-- ยินยอม -->
+<div class="form-section">
+    <input type="checkbox" id="consent" name="consent">
+    <label for="consent">ยินยอมให้เก็บข้อมูล</label>
+    <div class="invalid-feedback d-none" id="consent-error">โปรดยินยอม</div>
+</div>
 
+<!-- ปุ่ม -->
+<button type="button" class="btn-success" onclick="validateForm()">Submit</button>
 </form>
+@endsection
 
+@push('scripts')
 <script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-        e.preventDefault();
+function validateForm() {
+    let valid = true;
 
-        let isPass = true;
-
-        function check(el) {
-            if (
-                (el.type === "checkbox" && !el.checked) ||
-                (el.type !== "checkbox" && el.value === "")
-            ) {
-                el.classList.add("is-invalid");
-                el.classList.remove("is-valid");
-                isPass = false;
-            } else {
-                el.classList.add("is-valid");
-                el.classList.remove("is-invalid");
-            }
+    function check(id) {
+        const el = document.getElementById(id);
+        if (!el.value) {
+            el.classList.add('is-invalid');
+            valid = false;
+        } else {
+            el.classList.remove('is-invalid');
+            el.classList.add('is-valid');
         }
+    }
 
-        check(firstname);
-        check(lastname);
-        check(birthday);
-        check(age);
-        check(gender);
-        check(profile);
-        check(address);
-        check(favorite_color);
-        check(music);
-        check(agree);
+    check('fname');
+    check('lname');
+    check('date');
+    check('age');
+    check('address');
+    check('color');
 
-        if (isPass) {
-            alert("กรอกข้อมูลครบถ้วน (Pass)");
-        }
-    });
+    // เพศ
+    const gender = document.querySelector('input[name="gender"]:checked');
+    document.getElementById('gender-error').classList.toggle('d-none', gender);
+
+    // เพลง
+    const music = document.querySelector('input[name="music"]:checked');
+    document.getElementById('music-error').classList.toggle('d-none', music);
+
+    // consent
+    const consent = document.getElementById('consent');
+    document.getElementById('consent-error').classList.toggle('d-none', consent.checked);
+
+    // รูป
+    const photo = document.getElementById('photo');
+    if (!photo.files.length) {
+        photo.classList.add('is-invalid');
+        valid = false;
+    }
+
+    if (valid) document.querySelector('form').submit();
+}
 </script>
-
-</body>
-</html>
+@endpush
