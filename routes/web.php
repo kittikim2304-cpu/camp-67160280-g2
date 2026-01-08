@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Html101Controller;
+use App\Http\Controllers\PokedexController;
 
 Route::get('/', function () {
     return view('html101');
@@ -19,3 +20,6 @@ Route::post('/calculate', [App\Http\Controllers\MyController::class, 'calculate'
 Route::get('html101/create', [Html101Controller::class, 'create'])->name('html101.create');
 Route::post('html101', [Html101Controller::class, 'store'])->name('html101.store');
 Route::get('html101/view', [Html101Controller::class, 'view'])->name('html101.view');
+
+// Pokedex resource routes
+Route::resource('pokedexs', PokedexController::class);
